@@ -1,0 +1,11 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { effectiveStatus,dateLabel } from '../lib/types';
+import { placeSchema } from '../lib/validation';
+import { demoPlaces } from '../lib/demo';
+const now=Date.parse('2026-09-30T15:00:00Z');
+test('an open declaration expires strictly after 24 hours',()=>{assert.equal(effectiveStatus({status:'open',status_updated_at:new Date(now-86400000).toISOString()},now),'open');assert.equal(effectiveStatus({status:'open',status_updated_at:new Date(now-86400001).toISOString()},now),'unknown');});
+test('closed declarations also expire; hours never determine status',()=>{assert.equal(effectiveStatus({status:'closed',status_updated_at:new Date(now-1000).toISOString()},now),'closed');assert.equal(effectiveStatus({status:'closed',status_updated_at:new Date(now-90000000).toISOString()},now),'unknown');});
+test('dates are shown in Argentina',()=>{assert.match(dateLabel('2026-09-30T15:00:00Z'),/12:00/);});
+test('place validation rejects unsafe URLs, missing required fields and invalid coordinates',()=>{const p=demoPlaces[0];assert.equal(placeSchema.safeParse(p).success,true);for(const edit of [{image_url:'javascript:alert(1)'},{image_url:'http://example.com/a.jpg'},{latitude:91},{longitude:-181},{latitude:NaN},{name:''},{description:'short'},{whatsapp:'not-a-number'},{hours:['one']}])assert.equal(placeSchema.safeParse({...p,...edit}).success,false);});
+test('demo includes twelve fictional places, all categories and distinct states',()=>{assert.equal(demoPlaces.length,12);assert.equal(new Set(demoPlaces.map(p=>p.category)).size,5);assert.equal(new Set(demoPlaces.map(p=>effectiveStatus(p))).size,3);assert.ok(demoPlaces.every(p=>p.is_demo&&p.latitude< -31&&p.longitude< -60));});

@@ -1,0 +1,9 @@
+'use client';
+import { useEffect,useState } from 'react';
+import Link from 'next/link';
+import { Heart } from 'lucide-react';
+import { Place } from '@/lib/types';
+import { useFavorites } from './favorite';
+import { PlaceCard } from './card';
+import { Button } from './ui/button';
+export function FavoritesPage(){const ids=useFavorites();const key=ids.join(',');const [places,setPlaces]=useState<Place[]>([]);const [loading,setLoading]=useState(true);const [error,setError]=useState('');const [retry,setRetry]=useState(0);useEffect(()=>{const controller=new AbortController();fetch(`/api/places?ids=${encodeURIComponent(key)}`,{signal:controller.signal}).then(async r=>{if(!r.ok)throw new Error('No pudimos cargar tus favoritos.');return r.json();}).then(data=>{setPlaces(data);setError('');setLoading(false);}).catch(e=>{if(e.name!=='AbortError'){setError(e.message);setLoading(false);}});return()=>controller.abort();},[key,retry]);return <main id="main" className="shell standard-page"><span className="section-kicker">TUS PRÓXIMOS PLANES</span><h1>Lugares que te gustan <Heart className="inline text-teal-700"/></h1><p className="muted mb-8">Guardados en este navegador, listos para tu próxima escapada.</p>{loading?<p role="status">Cargando favoritos…</p>:error?<div role="alert" className="empty"><p>{error}</p><Button onClick={()=>{setLoading(true);setRetry(v=>v+1);}}>Reintentar</Button></div>:places.length?<div className="cards-grid">{places.map(p=><PlaceCard place={p} key={p.id}/>)}</div>:<div className="empty"><Heart size={40}/><h2>Tu próxima aventura empieza acá</h2><p>Tocá el corazón de un lugar para encontrarlo después.</p><Button asChild><Link href="/">Explorar Paraná</Link></Button></div>}</main>}

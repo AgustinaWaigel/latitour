@@ -1,0 +1,12 @@
+'use client';
+import { MapContainer,TileLayer,Marker,Popup,useMap,CircleMarker } from 'react-leaflet';
+import L from 'leaflet';
+import { useEffect,useState } from 'react';
+import { LocateFixed } from 'lucide-react';
+import { toast } from 'sonner';
+import { Place,effectiveStatus,statusLabels } from '@/lib/types';
+import { Button } from './ui/button';
+import 'leaflet/dist/leaflet.css';
+const center:L.LatLngExpression=[-31.728,-60.529];
+function Controls({places}:{places:Place[]}){const map=useMap();const [position,setPosition]=useState<[number,number]|null>(null);const [busy,setBusy]=useState(false);useEffect(()=>{if(places.length)map.fitBounds(L.latLngBounds(places.map(p=>[p.latitude,p.longitude])),{padding:[45,45],maxZoom:15});else map.setView(center,13);},[map,places]);return <><div className="locate-control"><Button variant="outline" disabled={busy} onClick={()=>{if(!navigator.geolocation){toast.error('Tu navegador no admite ubicación. Podés seguir explorando Paraná.');return;}setBusy(true);navigator.geolocation.getCurrentPosition(p=>{setBusy(false);const coords:[number,number]=[p.coords.latitude,p.coords.longitude];setPosition(coords);map.setView(coords,15);},()=>{setBusy(false);map.setView(center,13);toast.error('No pudimos acceder a tu ubicación. El mapa sigue disponible en Paraná.');},{timeout:10000});}}><LocateFixed size={17}/>{busy?'Ubicando…':'Mi ubicación'}</Button></div>{position&&<CircleMarker center={position} radius={8} pathOptions={{color:'#2563eb',fillOpacity:1}}><Popup>Tu ubicación</Popup></CircleMarker>}</>}
+export default function PlacesMap({places}:{places:Place[]}){return <div className="map-frame"><MapContainer center={center} zoom={13} scrollWheelZoom={false} style={{height:'100%',width:'100%'}}><TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>{places.map(p=><Marker key={p.id} position={[p.latitude,p.longitude]} icon={L.divIcon({className:'custom-marker',html:`<span style="background:${effectiveStatus(p)==='open'?'#146b56':'#586779'}"></span>`,iconSize:[28,28],iconAnchor:[14,14]})}><Popup><strong>{p.name}</strong><p>{statusLabels[effectiveStatus(p)]}</p><a href={`/lugares/${p.id}`}>Ver ficha del lugar →</a></Popup></Marker>)}<Controls places={places}/></MapContainer></div>}

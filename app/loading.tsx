@@ -1,0 +1,1 @@
+export default function Loading(){return <main id="main" className="shell standard-page" role="status"><div className="skeleton h-64"/><p className="py-6">Preparando tu recorrido por Paraná…</p><div className="cards-grid">{[1,2,3].map(n=><div className="skeleton h-80" key={n}/>)}</div></main>}
