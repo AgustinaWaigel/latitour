@@ -1,11 +1,115 @@
 'use client';
 import Link from 'next/link';
-import { useState,useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Pencil,Trash2,ExternalLink } from 'lucide-react';
+import { Pencil, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
-import { Place,labels,dateLabel,availabilityLabels } from '@/lib/types';
-import { updateStatus,deletePlace } from '@/app/actions';
+import { Place, labels, dateLabel, availabilityLabels } from '@/lib/types';
+import { updateStatus, deletePlace } from '@/app/actions';
 import { Status } from './card';
 import { Button } from './ui/button';
-export function PanelCard({place:p}:{place:Place}){const router=useRouter();const [pending,start]=useTransition();const [status,setStatus]=useState(p.status);const [availability,setAvailability]=useState(p.availability);return <article className="info-panel"><div className="card-title"><div><span className="section-kicker">{labels[p.category]}</span><h2>{p.name}</h2></div><Button asChild variant="ghost" size="icon"><Link href={`/lugares/${p.id}`} aria-label={`Ver ${p.name}`}><ExternalLink size={18}/></Link></Button></div><Status place={p}/><p className="small muted my-3">Estado confirmado: {dateLabel(p.status_updated_at)}<br/>Información actualizada: {dateLabel(p.updated_at)}</p><div className="form-grid"><label>Estado<select value={status} onChange={e=>setStatus(e.target.value as Place['status'])}><option value="open">Abierto</option><option value="closed">Cerrado</option><option value="unknown">Sin confirmar</option></select></label><label>Disponibilidad<select value={availability} onChange={e=>setAvailability(e.target.value as Place['availability'])}>{Object.entries(availabilityLabels).map(([k,v])=><option key={k} value={k}>{v}</option>)}</select></label></div><Button disabled={pending} className="w-full mt-4" onClick={()=>start(async()=>{try{const result=await updateStatus(p.id,status,availability);if(result.error)toast.error(result.error);else{toast.success(result.success);router.refresh();}}catch{toast.error('No pudimos guardar. Volvé a intentar.');}})}>{pending?'Guardando…':'Confirmar estado y disponibilidad'}</Button><div className="flex justify-between mt-4"><Button variant="outline" asChild><Link href={`/panel/${p.id}/editar`}><Pencil size={16}/>Editar información</Link></Button><Button variant="ghost" aria-label={`Eliminar ${p.name}`} disabled={pending} onClick={()=>{if(!window.confirm(`¿Eliminar “${p.name}”? Esta acción no se puede deshacer.`))return;start(async()=>{try{const result=await deletePlace(p.id);if(result.error)toast.error(result.error);else{toast.success(result.success);router.refresh();}}catch{toast.error('No se pudo eliminar.');}});}}><Trash2 size={17}/></Button></div></article>}
+import { NativeSelect } from './ui/native-select';
+import { ConfirmDelete } from './ui/alert-dialog';
+export function PanelCard({ place: p }: { place: Place }) {
+  const router = useRouter();
+  const [pending, start] = useTransition();
+  const [status, setStatus] = useState(p.status);
+  const [availability, setAvailability] = useState(p.availability);
+  return (
+    <article className="info-panel">
+      <div className="card-title">
+        <div>
+          <span className="section-kicker">{labels[p.category]}</span>
+          <h2>{p.name}</h2>
+        </div>
+        <Button asChild variant="ghost" size="icon">
+          <Link href={`/lugares/${p.id}`} aria-label={`Ver ${p.name}`}>
+            <ExternalLink size={18} />
+          </Link>
+        </Button>
+      </div>
+      <Status place={p} />
+      <p className="small muted my-3">
+        Estado confirmado: {dateLabel(p.status_updated_at)}
+        <br />
+        Información actualizada: {dateLabel(p.updated_at)}
+      </p>
+      <div className="form-grid">
+        <label>
+          Estado
+          <NativeSelect
+            value={status}
+            disabled={pending}
+            onChange={(e) => setStatus(e.target.value as Place['status'])}
+          >
+            <option value="open">Abierto</option>
+            <option value="closed">Cerrado</option>
+            <option value="unknown">Sin confirmar</option>
+          </NativeSelect>
+        </label>
+        <label>
+          Disponibilidad
+          <NativeSelect
+            value={availability}
+            disabled={pending}
+            onChange={(e) =>
+              setAvailability(e.target.value as Place['availability'])
+            }
+          >
+            {Object.entries(availabilityLabels).map(([k, v]) => (
+              <option key={k} value={k}>
+                {v}
+              </option>
+            ))}
+          </NativeSelect>
+        </label>
+      </div>
+      <Button
+        disabled={pending}
+        className="w-full mt-4"
+        onClick={() =>
+          start(async () => {
+            try {
+              const result = await updateStatus(p.id, status, availability);
+              if (result.error) toast.error(result.error);
+              else {
+                toast.success(result.success);
+                router.refresh();
+              }
+            } catch {
+              toast.error('No pudimos guardar. Volvé a intentar.');
+            }
+          })
+        }
+      >
+        {pending ? 'Guardando…' : 'Confirmar estado y disponibilidad'}
+      </Button>
+      <div className="flex justify-between mt-4">
+        <Button variant="outline" asChild>
+          <Link href={`/panel/${p.id}/editar`}>
+            <Pencil size={16} />
+            Editar información
+          </Link>
+        </Button>
+        <ConfirmDelete
+          name={p.name}
+          pending={pending}
+          onConfirm={() =>
+            start(async () => {
+              try {
+                const result = await deletePlace(p.id);
+                if (result.error) toast.error(result.error);
+                else {
+                  toast.success(result.success);
+                  router.refresh();
+                }
+              } catch {
+                toast.error('No se pudo eliminar.');
+              }
+            })
+          }
+        />
+      </div>
+    </article>
+  );
+}

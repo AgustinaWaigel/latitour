@@ -1,6 +1,47 @@
 import { z } from 'zod';
 import { categories } from './types';
-const httpsUrl=z.string().trim().max(2000).refine(v=>{if(!v)return true;try{return new URL(v).protocol==='https:';}catch{return false;}},'Usá una URL HTTPS válida.');
-export const placeSchema=z.object({name:z.string().trim().min(2,'Ingresá al menos 2 caracteres.').max(100),description:z.string().trim().min(15,'Contanos un poco más (mínimo 15 caracteres).').max(2000),category:z.enum(categories),address:z.string().trim().min(3,'Ingresá la dirección.').max(200),latitude:z.number().min(-90).max(90),longitude:z.number().min(-180).max(180),image_url:httpsUrl,phone:z.string().trim().max(30).regex(/^[+\d\s()-]*$/,'Ingresá un teléfono válido.'),whatsapp:z.string().trim().regex(/^\+?\d{8,15}$|^$/,'Ingresá entre 8 y 15 dígitos, con código de país.'),hours:z.array(z.string().trim().max(80)).length(7),status:z.enum(['open','closed','unknown']),availability:z.enum(['available','limited','unavailable','ask'])});
-export type PlaceInput=z.infer<typeof placeSchema>;
-export const authSchema=z.object({email:z.string().email('Ingresá un correo válido.'),password:z.string().min(8,'Usá al menos 8 caracteres.').max(128)});
+const httpsUrl = z
+  .string()
+  .trim()
+  .max(2000)
+  .refine((v) => {
+    if (!v) return true;
+    try {
+      return new URL(v).protocol === 'https:';
+    } catch {
+      return false;
+    }
+  }, 'Usá una URL HTTPS válida.');
+export const placeSchema = z.object({
+  name: z.string().trim().min(2, 'Ingresá al menos 2 caracteres.').max(100),
+  description: z
+    .string()
+    .trim()
+    .min(15, 'Contanos un poco más (mínimo 15 caracteres).')
+    .max(2000),
+  category: z.enum(categories),
+  address: z.string().trim().min(3, 'Ingresá la dirección.').max(200),
+  latitude: z.number().min(-90).max(90),
+  longitude: z.number().min(-180).max(180),
+  image_url: httpsUrl,
+  phone: z
+    .string()
+    .trim()
+    .max(30)
+    .regex(/^[+\d\s()-]*$/, 'Ingresá un teléfono válido.'),
+  whatsapp: z
+    .string()
+    .trim()
+    .regex(
+      /^\+?\d{8,15}$|^$/,
+      'Ingresá entre 8 y 15 dígitos, con código de país.',
+    ),
+  hours: z.array(z.string().trim().max(80)).length(7),
+  status: z.enum(['open', 'closed', 'unknown']),
+  availability: z.enum(['available', 'limited', 'unavailable', 'ask']),
+});
+export type PlaceInput = z.infer<typeof placeSchema>;
+export const authSchema = z.object({
+  email: z.string().email('Ingresá un correo válido.'),
+  password: z.string().min(8, 'Usá al menos 8 caracteres.').max(128),
+});

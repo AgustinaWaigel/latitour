@@ -1,8 +1,65 @@
 import Link from 'next/link';
-import { Plus,LogOut } from 'lucide-react';
+import { Plus, LogOut } from 'lucide-react';
 import { requireProvider } from '@/lib/auth';
 import { signOut } from '@/app/actions';
 import { Place } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { PanelCard } from '@/components/panel-card';
-export default async function Panel(){const {db,user}=await requireProvider();const {data,error}=await db.from('places').select('*').eq('owner_id',user.id).order('name');if(error)throw new Error('No pudimos cargar tus establecimientos.');return <main id="main" className="shell standard-page"><div className="panel-heading"><div><span className="section-kicker">TU ESPACIO EN LATITOUR</span><h1>Mis establecimientos</h1><p className="muted">{user.email}</p></div><div className="flex gap-3 flex-wrap"><Button asChild><Link href="/panel/nuevo"><Plus size={17}/>Nuevo lugar</Link></Button><form action={signOut}><Button variant="outline"><LogOut size={17}/>Salir</Button></form></div></div><div className="demo-notice"><p>Confirmá el estado al comenzar tu jornada. Pasadas 24 horas, se mostrará como sin confirmar. Los horarios habituales se informan por separado.</p></div>{data?.length?<div className="panel-grid">{(data as Place[]).map(p=><PanelCard key={p.id} place={p}/>)}</div>:<div className="empty"><h2>Tu primer lugar te espera</h2><p>Creá un establecimiento para que los viajeros puedan encontrarlo.</p><Button asChild><Link href="/panel/nuevo">Crear establecimiento</Link></Button></div>}</main>}
+export default async function Panel() {
+  const { db, user } = await requireProvider();
+  const { data, error } = await db
+    .from('places')
+    .select('*')
+    .eq('owner_id', user.id)
+    .order('name');
+  if (error) throw new Error('No pudimos cargar tus establecimientos.');
+  return (
+    <main id="main" className="shell standard-page">
+      <div className="panel-heading">
+        <div>
+          <span className="section-kicker">TU ESPACIO EN LATITOUR</span>
+          <h1>Mis establecimientos</h1>
+          <p className="muted">{user.email}</p>
+        </div>
+        <div className="flex gap-3 flex-wrap">
+          <Button asChild>
+            <Link href="/panel/nuevo">
+              <Plus size={17} />
+              Nuevo lugar
+            </Link>
+          </Button>
+          <form action={signOut}>
+            <Button variant="outline">
+              <LogOut size={17} />
+              Salir
+            </Button>
+          </form>
+        </div>
+      </div>
+      <div className="demo-notice">
+        <p>
+          Confirmá el estado al comenzar tu jornada. Pasadas 24 horas, se
+          mostrará como sin confirmar. Los horarios habituales se informan por
+          separado.
+        </p>
+      </div>
+      {data?.length ? (
+        <div className="panel-grid">
+          {(data as Place[]).map((p) => (
+            <PanelCard key={p.id} place={p} />
+          ))}
+        </div>
+      ) : (
+        <div className="empty">
+          <h2>Tu primer lugar te espera</h2>
+          <p>
+            Creá un establecimiento para que los viajeros puedan encontrarlo.
+          </p>
+          <Button asChild>
+            <Link href="/panel/nuevo">Crear establecimiento</Link>
+          </Button>
+        </div>
+      )}
+    </main>
+  );
+}

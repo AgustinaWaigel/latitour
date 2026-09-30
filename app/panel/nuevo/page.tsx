@@ -1,2 +1,13 @@
 import { PlaceForm } from '@/components/place-form';
-export default function NewPlace(){return <main id="main" className="shell standard-page narrow"><span className="section-kicker">MIS ESTABLECIMIENTOS</span><h1>Un nuevo lugar para descubrir</h1><p className="muted mb-8">Completá la información. Los campos con * son obligatorios.</p><PlaceForm/></main>}
+export default function NewPlace() {
+  return (
+    <main id="main" className="shell standard-page narrow">
+      <span className="section-kicker">MIS ESTABLECIMIENTOS</span>
+      <h1>Un nuevo lugar para descubrir</h1>
+      <p className="muted mb-8">
+        Completá la información. Los campos con * son obligatorios.
+      </p>
+      <PlaceForm />
+    </main>
+  );
+}

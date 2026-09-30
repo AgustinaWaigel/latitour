@@ -20,11 +20,11 @@ Sin variables de Supabase, la aplicación ofrece **12 establecimientos ficticios
 
 1. Creá un proyecto en Supabase.
 2. En SQL Editor, ejecutá `supabase/schema.sql` y después `supabase/seed.sql`. El segundo script es idempotente: no sobrescribe cambios previos.
-3. En Project Settings → API, copiá la URL y la clave pública `anon` (o publishable) a `.env.local`:
+3. En Project Settings → API, copiá la URL y la clave pública publishable (`sb_publishable_...`) a `.env.local`:
 
 ```dotenv
 NEXT_PUBLIC_SUPABASE_URL=https://TU-PROYECTO.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=TU-CLAVE-PUBLICA
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=TU-CLAVE-PUBLICA
 ```
 
 No uses `service_role`, claves secretas ni contraseñas de la base de datos en variables `NEXT_PUBLIC_*`. La seguridad de la clave pública depende de las políticas RLS incluidas.
@@ -61,7 +61,7 @@ Para volver a confirmar un mismo estado usá el botón rápido del panel. Editar
 - Estado manual independiente de horarios. Vence **después** de 24 horas. Las consultas abiertas usan el mismo umbral y se recalculan al volver a consultar datos.
 - Un trigger registra `updated_at` y controla `status_updated_at` con el reloj de la base de datos. Una edición de información sin cambio de estado mantiene la confirmación anterior. Se muestran fechas en `America/Argentina/Buenos_Aires`.
 - React Hook Form + Zod validan en cliente y servidor; SQL agrega restricciones y políticas. Sonner comunica éxito y error.
-- Componentes locales de estilo shadcn/ui (Radix Slot, CVA, controles nativos accesibles) personalizados con la identidad Latitour. Confirmación destructiva nativa del navegador.
+- Componentes locales de estilo shadcn/ui (Radix Slot, CVA, controles nativos accesibles) personalizados con la identidad Latitour. Diálogo destructivo accesible con Radix Alert Dialog.
 - Adaptación liviana de FadeContent de React Bits para la bienvenida, con Web Animations API y preferencia de movimiento reducido, sin agregar una dependencia de animación. Ver `THIRD_PARTY_NOTICES.md`.
 - Fotografías remotas ilustrativas de Unsplash. Se optimizan con Next Image; las URLs HTTPS personalizadas usan carga nativa diferida para evitar habilitar un proxy de imágenes arbitrario.
 - Favoritos: `localStorage`, sin cuenta y sin sincronización entre dispositivos. Si un lugar se elimina, deja de mostrarse aunque su identificador siga guardado localmente.
@@ -77,7 +77,7 @@ npm run build
 npm run test:e2e
 ```
 
-Las pruebas del navegador usan Playwright/Chromium. La primera vez: `npx playwright install chromium`. El servidor se inicia automáticamente si no hay uno en el puerto 3000. Las pruebas de demo esperan un entorno sin variables Supabase.
+Las pruebas del navegador usan Playwright/Chromium. La primera vez: `npx playwright install chromium`. Ejecutá primero `npm run build`; las pruebas inician el servidor de producción en el puerto 3100. Las pruebas de demo esperan un entorno sin variables Supabase.
 
 Para verificar RLS contra tu proyecto real, creá `.env.test.local` (ignorado por Git):
 
@@ -104,3 +104,5 @@ El seed puede regenerarse con `npm run seed:generate`.
 - [React Bits](https://github.com/DavidHDev/react-bits)
 
 Las skills Impeccable, frontend y Next.js no estaban instaladas en el entorno de desarrollo. Se realizó la implementación con las herramientas disponibles.
+La suite local (
+pm test) también ejecuta el esquema SQL y el seed en PostgreSQL embebido (PGlite), con roles anónimo y autenticados. Verifica RLS, rechazo de transferencias de propiedad, vencimiento y timestamps. Esto verifica las políticas SQL sin reemplazar la prueba contra Supabase real.
