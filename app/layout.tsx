@@ -1,7 +1,17 @@
 import type { Metadata } from 'next';
+import { Familjen_Grotesk, Gloock } from 'next/font/google';
 import { Toaster } from 'sonner';
 import { Header } from '@/components/header';
 import './globals.css';
+const sans = Familjen_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-sans',
+});
+const display = Gloock({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-display',
+});
 export const metadata: Metadata = {
   title: 'Latitour · Descubrí Paraná',
   description:
@@ -13,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es-AR">
+    <html lang="es-AR" className={`${sans.variable} ${display.variable}`}>
       <body>
         <a href="#main" className="skip-link">
           Saltar al contenido
