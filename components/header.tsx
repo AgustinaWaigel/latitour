@@ -1,16 +1,22 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Compass, Heart, ArrowUpRight } from 'lucide-react';
+import Image from 'next/image';
+import { Heart, ArrowUpRight } from 'lucide-react';
 export function Header() {
   const path = usePathname();
   return (
     <header className="site-header">
       <div className="shell header-inner">
         <Link href="/" className="brand">
-          <span className="brand-icon">
-            <Compass size={25} />
-          </span>
+          <Image
+            src="/logo.png"
+            alt=""
+            width={44}
+            height={44}
+            className="brand-logo"
+            priority
+          />
           latitour<span className="brand-dot">.</span>
         </Link>
         <nav aria-label="Navegación principal">

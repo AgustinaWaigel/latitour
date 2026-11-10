@@ -70,7 +70,7 @@ function Controls({ places }: { places: Place[] }) {
         <CircleMarker
           center={position}
           radius={8}
-          pathOptions={{ color: '#2563eb', fillOpacity: 1 }}
+          pathOptions={{ color: '#164468', fillOpacity: 1 }}
         >
           <Popup>Tu ubicación</Popup>
         </CircleMarker>
@@ -97,7 +97,7 @@ export default function PlacesMap({ places }: { places: Place[] }) {
             position={[p.latitude, p.longitude]}
             icon={L.divIcon({
               className: 'custom-marker',
-              html: `<span style="background:${effectiveStatus(p) === 'open' ? '#146b56' : '#586779'}"></span>`,
+              html: `<span style="background:${effectiveStatus(p) === 'open' ? '#f37a1f' : '#66707b'}"></span>`,
               iconSize: [28, 28],
               iconAnchor: [14, 14],
             })}
