@@ -4,11 +4,11 @@ import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { ComponentProps } from 'react';
 const variants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700',
+  'inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--green)]',
   {
     variants: {
       variant: {
-        default: 'bg-teal-800 text-white hover:bg-teal-900',
+        default: 'bg-[var(--green)] text-white hover:bg-[var(--deep)]',
         outline:
           'border border-slate-200 bg-white hover:bg-slate-50 text-slate-700',
         ghost: 'hover:bg-slate-100 text-slate-600',

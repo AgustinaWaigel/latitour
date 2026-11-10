@@ -39,7 +39,7 @@ export function FavoritesPage() {
     <main id="main" className="shell standard-page">
       <span className="section-kicker">TUS PRÓXIMOS PLANES</span>
       <h1>
-        Lugares que te gustan <Heart className="inline text-teal-700" />
+        Lugares que te gustan <Heart className="inline text-[var(--green)]" />
       </h1>
       <p className="muted mb-8">
         Guardados en este navegador, listos para tu próxima escapada.
