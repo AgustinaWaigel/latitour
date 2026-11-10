@@ -227,8 +227,8 @@ p {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(120% 90% at 0% 100%, #0b2a22f2 0%, transparent 60%),
-    linear-gradient(90deg, #0b2a22e6, #0b2a22a3 45%, #0b2a2214 85%);
+    radial-gradient(120% 90% at 0% 100%, #0c2740f2 0%, transparent 60%),
+    linear-gradient(90deg, #0c2740e6, #0c2740a3 45%, #0c274014 85%);
 }
 .hero-river {
   position: absolute;
@@ -370,7 +370,7 @@ p {
 .search-box:focus-within {
   transform: translateY(-2px);
   box-shadow:
-    0 0 0 4px #d3e5a266,
+    0 0 0 4px #ffc89a66,
     0 18px 40px -14px #0008;
 }
 .search-box > svg {
@@ -796,7 +796,7 @@ p {
 }
 .place-card:hover {
   border-color: #ced6dd;
-  box-shadow: 0 22px 44px -22px #14323d4d;
+  box-shadow: 0 22px 44px -22px #13314a4d;
   transform: translateY(-4px);
 }
 .card-photo {
@@ -1448,7 +1448,7 @@ label > textarea {
     font-size: 10px;
   }
   .hero-shade {
-    background: linear-gradient(90deg, #12392fe8, #12392f60);
+    background: linear-gradient(90deg, #123a5ce8, #123a5c60);
   }
   .category-row {
     gap: 8px;
